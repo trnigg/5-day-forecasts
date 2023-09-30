@@ -23,7 +23,7 @@
     <!-- Content -->
     <body>
         <!-- Top Banner -->
-        <header class="p-4 mb-4 bg-light">
+        <header class="p-4 mb-1 bg-light">
             <h1 class="text-center text-primary">Weather Dashboard</h1>
         </header>
 
@@ -36,31 +36,33 @@
 
                     <div class="col-12 col-sm-6 col-md-3 col-lg-2">
 
-                        <div class="row">
+                        <!-- <div class="row"> -->
                             <form class="d-grid gap-2 mb-4">
-                                <label for="city-search" class="form-label">Enter a city:</label>
-                                <input type="text" class="form-control" id="city-search" placeholder="City Name">
-                                <button type="button" class="btn btn-outline-primary">Search</button>
+                                <label for="search-input" class="form-label mt-4"><h2 class="text-center text-secondary">Enter a city:</h2></label>
+                                <input type="text" class="form-control" id="search-input" placeholder="City Name">
+                                <button type="button" class="btn btn-outline-primary" id="search-button">Search</button>
                             </form>
-                        </div>
-                        <div class="row">
-                            <div class="d-grid gap-2 mb-4">
-                                <p>Previous Searches:</p>
+                        <!-- </div> -->
+                        <!-- <div class="row"> -->
+                            <div class="d-grid gap-2 mb-4" id="search-history">
+                                <h2 class="text-center text-secondary">Previous Searches:</h2>
                                 <button type="button" class="btn btn-outline-secondary">(City Name)</button>
                                 <button type="button" class="btn btn-outline-secondary">(City Name)</button>
-                                <button type="button" class="btn btn-outline-danger mt-2">Clear</button>
                             </div>
-                        </div>
+                            <div class="d-grid gap-2 mb-4">
+                                <button type="button" class="btn btn-outline-danger mt-2" id="clear-history-button">Clear History</button>
+                            </div>
+                        <!-- </div> -->
 
                     </div>
 
                     <div class="col-12 col-sm-6 col-md-9 col-lg-10">
-                        <div class="row justify-content-between">
-                            <div class="col-12 col-md-12 col-lg-9 col-xxl-12 py-2">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-12 col-md-12 col-lg-9 col-xxl-12 gy-4">
                                 <div class="card">
-                                    <div class="card-header">
+                                    <h3 class="card-header">
                                       Featured
-                                    </div>
+                                    </h3>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">An item</li>
                                       <li class="list-group-item">A second item</li>
@@ -68,11 +70,11 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 py-2">
+                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 gy-4">
                                 <div class="card">
-                                    <div class="card-header">
+                                    <h4 class="card-header">
                                       Featured
-                                    </div>
+                                    </h4>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">An item</li>
                                       <li class="list-group-item">A second item</li>
@@ -80,11 +82,11 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 py-2">
+                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 gy-4">
                                 <div class="card">
-                                    <div class="card-header">
+                                    <h4 class="card-header">
                                       Featured
-                                    </div>
+                                    </h4>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">An item</li>
                                       <li class="list-group-item">A second item</li>
@@ -92,11 +94,11 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 py-2">
+                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 gy-4">
                                 <div class="card">
-                                    <div class="card-header">
+                                    <h4 class="card-header">
                                       Featured
-                                    </div>
+                                    </h4>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">An item</li>
                                       <li class="list-group-item">A second item</li>
@@ -104,11 +106,11 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 py-2">
+                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 gy-4">
                                 <div class="card">
-                                    <div class="card-header">
+                                    <h4 class="card-header">
                                       Featured
-                                    </div>
+                                    </h4>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">An item</li>
                                       <li class="list-group-item">A second item</li>
@@ -116,11 +118,11 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 py-2">
+                            <div class="col-12 col-md-6 col-lg-3 col-xxl-2 gy-4">
                                 <div class="card">
-                                    <div class="card-header">
+                                    <h4 class="card-header">
                                       Featured
-                                    </div>
+                                    </h4>
                                     <ul class="list-group list-group-flush">
                                       <li class="list-group-item">An item</li>
                                       <li class="list-group-item">A second item</li>
