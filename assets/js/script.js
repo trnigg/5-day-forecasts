@@ -27,9 +27,6 @@
 
 // _________________________________________________________________________________________________
 
-
-//  MY API Key: 302392b3827a5512bab59a356ac0fa88
-
 // Define global variables
 let searchInput = document.querySelector('#search-input');
 let searchButton = document.querySelector('#search-button');
@@ -47,7 +44,6 @@ const API_KEY = '302392b3827a5512bab59a356ac0fa88';
 // Function to fetch weather data from the API
 function fetchCurrentWeather(city) {
     // Make a fetch request to the Weather API using the city
-    city = "perth";
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`; // Use template-literals to insert 'city' parameter and 'API_KEY' constant and get temperature in celsius (metric).
     fetch(apiUrl) //initiates HTTP GET request
     .then(function (response) {
@@ -61,24 +57,71 @@ function fetchCurrentWeather(city) {
         displayCurrentWeather(weatherData);
     })
     .catch(function (error) {
-      alert('Could not get weather data: ' + error.message); // if there is a run-time error, the message will be displayed here. If however, there is a fetch error, it will be displayed as thrown above.
+      alert('Could not get current weather data: ' + error.message); // if there is a run-time error, the message will be displayed here. If however, there is a fetch error, it will be displayed as thrown above.
     });
         // Parse the response data
     // Display the weather data
     // Generate and display weather cards for the five-day forecast
+    console.log(apiUrl);
 }
-fetchCurrentWeather();
+
+// fetchCurrentWeather();
   
+// Function to fetch forecast data from the API
+function fetchForecastWeather(city) {
+    // Make a fetch request to the Weather API using the city
+    let apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`; // Use template-literals to insert 'city' parameter and 'API_KEY' constant and get temperature in celsius (metric).
+    fetch(apiUrl) //initiates HTTP GET request
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Fetch Error (${response.statusText})`);
+      }
+    })
+    .then(function (forecastData){
+        displayForecastWeather(forecastData);
+    })
+    .catch(function (error) {
+      alert('Could not get forecast weather data: ' + error.message); // if there is a run-time error, the message will be displayed here. If however, there is a fetch error, it will be displayed as thrown above.
+    });
+        // Parse the response data
+    // Display the weather data
+    // Generate and display weather cards for the five-day forecast
+    console.log(apiUrl);
+}
+
   // Function to display weather data
-  function displayWeather(weatherData) {
+  function displayCurrentWeather(weatherData) {
     // Clear the weather container
     weatherContainer.innerHTML = "";
-  
     // Create and display the main weather card for today
+    
+    const cityName = weatherData.name;
+    const weatherIcon = weatherData.weather[0].icon;
+    const countryCode = weatherData.sys.country;
+    const temperature = weatherData.main.temp;
+    const humidity = weatherData.main.humidity;
+    const windSpeed = weatherData.wind.speed; // need to convert to km/h
+
+    console.log(cityName);
+    console.log(countryCode);
+    console.log(temperature);
+    console.log(humidity);
+    console.log(windSpeed); // need to convert to km/h
+    console.log(weatherIcon);
+    console.log(weatherData);
+
+}
+  
+  // Function to display forecast data
+  function displayForecastWeather(forecastData) {
     
     // Create and display weather cards for the five-day forecast
 }
-  
+
+
+
   // Function to save search to local storage and update search history
   function saveSearch(city) {
     // Save the city to local storage
@@ -91,13 +134,15 @@ fetchCurrentWeather();
 
 // Event listener for form submission
 searchButton.addEventListener("click", function (event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  // Get the user's input from the search field
-  let city = searchInput.value;
+    // Get the user's input from the search field
+    let city = searchInput.value;
 
-  // Make a fetch request to the Weather API using the submitted city
-  fetchWeather(city);
+    // Make a fetch request to the Weather API using the submitted city
+    fetchCurrentWeather(city);
+    fetchForecastWeather(city);
+    saveSearch(city);
 });
 
 
