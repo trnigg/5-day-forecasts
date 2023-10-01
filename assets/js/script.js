@@ -33,6 +33,8 @@ let searchButton = document.querySelector('#search-button');
 let weatherContainer = document.querySelector('#weather-container');
 let searchHistoryContainer = document.querySelector('#search-history');
 let clearHistoryButton = document.querySelector('#clear-history-button');
+let currentWeatherContainer = document.querySelector('#current-weather-container');
+let forecastWeatherContainers = document.getElementsByClassName('forecast-weather-containers');
 
 // Going to use the deprecated built-in geocoding
 const API_KEY = '302392b3827a5512bab59a356ac0fa88';
@@ -93,16 +95,58 @@ function fetchForecastWeather(city) {
 
   // Function to display weather data
   function displayCurrentWeather(weatherData) {
-    // Clear the weather container
-    weatherContainer.innerHTML = "";
-    // Create and display the main weather card for today
-    
+    // Clear the #current-weather-container
+    currentWeatherContainer.innerHTML = "";
+
+    // Required Weather Data
     const cityName = weatherData.name;
-    const weatherIcon = weatherData.weather[0].icon;
     const countryCode = weatherData.sys.country;
+    const weatherIcon = weatherData.weather[0].icon;
     const temperature = weatherData.main.temp;
     const humidity = weatherData.main.humidity;
-    const windSpeed = weatherData.wind.speed; // need to convert to km/h
+    const windSpeed = weatherData.wind.speed; // In m/s by default
+    const windSpeedKmh = (windSpeed * 3.6).toFixed(2); // Converts windspeed from m/s to km/h and round to 2 decimal places
+
+
+    // Create and display the main weather card for today
+
+    // Create components on the weather card and set classes for Bootstrap formatting
+    // Main Card
+    const currentWeatherCard = document.createElement("div");
+    currentWeatherCard.className = "card";
+    // Card Heading
+    const currentWeatherHeadingEl = document.createElement("h3");
+    currentWeatherHeadingEl.className = "card-header";
+    currentWeatherHeadingEl.innerHTML = `<strong>${cityName}, ${countryCode}</strong> (Today, 1st Oct 2023) ${weatherIcon}`; // need to add dynamic date and link icon to jpg // maybe strong tags to cityname
+    // Weather Details Container;
+    const currentWeatherBodyEl = document.createElement("ul");
+    currentWeatherBodyEl.classList.add("list-group", "list-group-flush");
+    // Temperature Item
+    const currentTempEl = document.createElement("li");
+    currentTempEl.className = "list-group-item";
+    currentTempEl.innerHTML = `<strong>Temperature:</strong> ${temperature}°C`;
+    // Humidity Item
+    const currentHumidityEl = document.createElement("li");
+    currentHumidityEl.className = "list-group-item";
+    currentHumidityEl.innerHTML = `<strong>Humidity:</strong> ${humidity}%`;
+    // Windspeed Item
+    const currentWindEl = document.createElement("li");
+    currentWindEl.className = "list-group-item";
+    currentWindEl.innerHTML = `<strong>Wind-Speed:</strong> ${windSpeedKmh}km/h`;
+
+    // Combine all to complete card and add to DOM
+    // Add list-items to list
+    currentWeatherBodyEl.appendChild(currentTempEl);
+    currentWeatherBodyEl.appendChild(currentHumidityEl);
+    currentWeatherBodyEl.appendChild(currentWindEl);
+    // Add heading and list to card
+    currentWeatherCard.appendChild(currentWeatherHeadingEl);
+    currentWeatherCard.appendChild(currentWeatherBodyEl);
+    // Add card to container
+    currentWeatherContainer.appendChild(currentWeatherCard);
+
+
+
 
     console.log(cityName);
     console.log(countryCode);
