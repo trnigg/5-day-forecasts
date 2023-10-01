@@ -28,21 +28,46 @@
 // _________________________________________________________________________________________________
 
 
+//  MY API Key: 302392b3827a5512bab59a356ac0fa88
+
 // Define global variables
-let searchInput = document.querySelector("#search-input");
-let searchButton = document.querySelector("#search-button");
-let weatherContainer = document.querySelector("#weather-container");
-let searchHistoryContainer = document.querySelector("#search-history");
-let clearHistoryButton = document.querySelector("#clear-history-button");
+let searchInput = document.querySelector('#search-input');
+let searchButton = document.querySelector('#search-button');
+let weatherContainer = document.querySelector('#weather-container');
+let searchHistoryContainer = document.querySelector('#search-history');
+let clearHistoryButton = document.querySelector('#clear-history-button');
+
+// Going to use the deprecated built-in geocoding
+const API_KEY = '302392b3827a5512bab59a356ac0fa88';
+// let requestUrl = 'api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}'; forecast
+
+
 
 
 // Function to fetch weather data from the API
-function fetchWeather(city) {
+function fetchCurrentWeather(city) {
     // Make a fetch request to the Weather API using the city
-    // Parse the response data
+    city = "perth";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`; // Use template-literals to insert 'city' parameter and 'API_KEY' constant and get temperature in celsius (metric).
+    fetch(apiUrl) //initiates HTTP GET request
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error(`Fetch Error (${response.statusText})`); //  https://www.youtube.com/watch?v=cFTFtuEQ-10 see more comments next to fetch
+      }
+    })
+    .then(function (weatherData){
+        displayCurrentWeather(weatherData);
+    })
+    .catch(function (error) {
+      alert('Could not get weather data: ' + error.message); // if there is a run-time error, the message will be displayed here. If however, there is a fetch error, it will be displayed as thrown above.
+    });
+        // Parse the response data
     // Display the weather data
     // Generate and display weather cards for the five-day forecast
-  }
+}
+fetchCurrentWeather();
   
   // Function to display weather data
   function displayWeather(weatherData) {
@@ -52,7 +77,7 @@ function fetchWeather(city) {
     // Create and display the main weather card for today
     
     // Create and display weather cards for the five-day forecast
-  }
+}
   
   // Function to save search to local storage and update search history
   function saveSearch(city) {
@@ -61,7 +86,7 @@ function fetchWeather(city) {
     // Add an event listener to the button to perform a new search when clicked
     // Update the search history container
     // Show the "Clear Searches" button
-  }
+}
 
 
 // Event listener for form submission
@@ -73,23 +98,21 @@ searchButton.addEventListener("click", function (event) {
 
   // Make a fetch request to the Weather API using the submitted city
   fetchWeather(city);
-  displayWeather(weatherData);
 });
 
 
-
 // Event listener for clearing search history
-clearSearchButton.addEventListener("click", function () {
+clearHistoryButton.addEventListener("click", function () {
   // Clear the search history from local storage
   // Clear the search history container
-  // Hide the "Clear Searches" button
+  // Hide the "Clear History" button
 });
 
 // Function to initialize the app
 function init() {
   // Check if there are previous searches in local storage
   // If there are, generate and display buttons for each search
-  // Show or hide the "Clear Searches" button based on search history
+  // Show or hide the "Clear History" button based on search history
 }
 
 // Call the init function to initialize the app
