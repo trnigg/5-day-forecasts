@@ -1,32 +1,3 @@
-
-
-//GET WEATHER
-// EventListener and Text Input:
-    // On Submit take Text Input:
-        // Make fetch request to WeatherAPI using submitted city
-        // Parse Data
-        // DISPLAY WEATHER
-            // Generate Weather Cards
-                //Different Weather card class for first card, then remaining 5 cards
-            // Append weather cards
-
-
-// PREVIOUS SEARCHES
-//On get weather function
-    // Save Search to LocalStorage
-        // Generate and append a button element
-        //GET WEATHER
-            // Use search term/city as name for button
-            // apply the API instructions to delegate event listeners across the collection of buttons and make relevent search when corresponding button is clicked
-                // DISPLAY WEATHER
-        // If at least one button containing a prevously searched city exists, appened a "Clear Searches" Button
-
-
-// CLEAR SEARCH HISTORY
-    // EventListener when clicked clear previous searches from local memory and clear the created city buttons
-
-// _________________________________________________________________________________________________
-
 // Define global variables
 let searchInput = document.querySelector('#search-input');
 let searchButton = document.querySelector('#search-button');
@@ -101,11 +72,13 @@ function fetchForecastWeather(city) {
     // Required Weather Data
     const cityName = weatherData.name;
     const countryCode = weatherData.sys.country;
-    const weatherIcon = weatherData.weather[0].icon;
+    const weatherIconCode = weatherData.weather[0].icon;
+    const weatherDescription = weatherData.weather[0].description;
     const temperature = weatherData.main.temp;
     const humidity = weatherData.main.humidity;
     const windSpeed = weatherData.wind.speed; // In m/s by default
     const windSpeedKmh = (windSpeed * 3.6).toFixed(2); // Converts windspeed from m/s to km/h and round to 2 decimal places
+    const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}.png`;
 
 
     // Create and display the main weather card for today
@@ -117,7 +90,12 @@ function fetchForecastWeather(city) {
     // Card Heading
     const currentWeatherHeadingEl = document.createElement("h3");
     currentWeatherHeadingEl.className = "card-header";
-    currentWeatherHeadingEl.innerHTML = `<strong>${cityName}, ${countryCode}</strong> (Today, 1st Oct 2023) ${weatherIcon}`; // need to add dynamic date and link icon to jpg // maybe strong tags to cityname
+    currentWeatherHeadingEl.innerHTML = `<strong>${cityName}, ${countryCode}</strong> (Today, 2/10/23)`; // need to add dynamic date and link icon to jpg // maybe strong tags to cityname
+    // Weather Icon Img Element
+    const iconImageEl = document.createElement('img');
+    iconImageEl.src = weatherIconUrl;
+    iconImageEl.alt = weatherDescription;
+    
     // Weather Details Container;
     const currentWeatherBodyEl = document.createElement("ul");
     currentWeatherBodyEl.classList.add("list-group", "list-group-flush");
@@ -139,6 +117,8 @@ function fetchForecastWeather(city) {
     currentWeatherBodyEl.appendChild(currentTempEl);
     currentWeatherBodyEl.appendChild(currentHumidityEl);
     currentWeatherBodyEl.appendChild(currentWindEl);
+    // Add icon image to Heading
+    currentWeatherHeadingEl.appendChild(iconImageEl);
     // Add heading and list to card
     currentWeatherCard.appendChild(currentWeatherHeadingEl);
     currentWeatherCard.appendChild(currentWeatherBodyEl);
@@ -153,14 +133,16 @@ function fetchForecastWeather(city) {
     console.log(temperature);
     console.log(humidity);
     console.log(windSpeed); // need to convert to km/h
-    console.log(weatherIcon);
+    console.log(weatherIconCode);
+    console.log(weatherDescription);
+    console.log(weatherIconUrl);
     console.log(weatherData);
 
 }
   
   // Function to display forecast data
   function displayForecastWeather(forecastData) {
-    
+
     // Create and display weather cards for the five-day forecast
 }
 
