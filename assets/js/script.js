@@ -1,3 +1,8 @@
+// FUNCTION to execute code only run after the DOM is fully loaded
+
+// Add Day.js plugin for Ordinal Date Format - https://day.js.org/docs/en/plugin/loading-into-browser
+dayjs.extend(window.dayjs_plugin_localizedFormat);
+
 // Define global variables
 let searchInput = document.querySelector('#search-input');
 let searchButton = document.querySelector('#search-button');
@@ -69,16 +74,20 @@ function fetchForecastWeather(city) {
     // Clear the #current-weather-container
     currentWeatherContainer.innerHTML = "";
 
-    // Required Weather Data
+    // Raw Weather Data
     const cityName = weatherData.name;
     const countryCode = weatherData.sys.country;
+    const dataTimestamp = weatherData.dt;
     const weatherIconCode = weatherData.weather[0].icon;
     const weatherDescription = weatherData.weather[0].description;
     const temperature = weatherData.main.temp;
     const humidity = weatherData.main.humidity;
     const windSpeed = weatherData.wind.speed; // In m/s by default
+
+    // Dependants 
     const windSpeedKmh = (windSpeed * 3.6).toFixed(2); // Converts windspeed from m/s to km/h and round to 2 decimal places
     const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}.png`;
+    const formattedTimestamp = dayjs.unix(dataTimestamp).format('lll');
 
 
     // Create and display the main weather card for today
@@ -90,7 +99,7 @@ function fetchForecastWeather(city) {
     // Card Heading
     const currentWeatherHeadingEl = document.createElement("h3");
     currentWeatherHeadingEl.className = "card-header";
-    currentWeatherHeadingEl.innerHTML = `<strong>${cityName}, ${countryCode}</strong> (Today, 2/10/23)`; // need to add dynamic date and link icon to jpg // maybe strong tags to cityname
+    currentWeatherHeadingEl.innerHTML = `<strong>${cityName}, ${countryCode}</strong> (${formattedTimestamp})`; // need to add dynamic date and link icon to jpg // maybe strong tags to cityname
     // Weather Icon Img Element
     const iconImageEl = document.createElement('img');
     iconImageEl.src = weatherIconUrl;
@@ -136,6 +145,7 @@ function fetchForecastWeather(city) {
     console.log(weatherIconCode);
     console.log(weatherDescription);
     console.log(weatherIconUrl);
+    console.log(dataTimestamp);
     console.log(weatherData);
 
 }
