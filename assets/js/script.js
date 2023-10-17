@@ -150,39 +150,43 @@ function displayForecastWeather(forecastData) {
         const singleForecastCard = document.createElement("div");
         singleForecastCard.className = "card";
 
-        // Extract (raw) relevant data
-        const dataTimestamp = singleForecast.dt;
+       // Extract (raw) relevant data
+       const dataTimestamp = singleForecast.dt;
+       const temperature = singleForecast.main.temp;
+       const weatherIconCode = singleForecast.weather[0].icon;
+       const weatherDescription = singleForecast.weather[0].description;
+       const humidity = singleForecast.main.humidity;
+       const windSpeed = singleForecast.wind.speed; // In m/s by default
 
+       // Dependants / formatted data
+       const windSpeedKmh = (windSpeed * 3.6).toFixed(2);
+       const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}.png`;
+       const formattedTimestamp = dayjs.unix(dataTimestamp).format('ll');
 
-        const temperature = singleForecast.main.temp;
-        const weatherIconCode = singleForecast.weather[0].icon;
-        const weatherDescription = singleForecast.weather[0].description;
+       // Create an HTML string for the forecast card
+       const forecastCardHTML = `
+           <div class="card">
+               <h4 class="card-header">
+                   ${formattedTimestamp}
+                   <img src="${weatherIconUrl}" alt="${weatherDescription}">
+               </h4>
+               <ul class="list-group list-group-flush">
+                   <li class="list-group-item">
+                       <strong>Temperature:</strong> ${temperature}°C
+                   </li>
+                   <li class="list-group-item">
+                       <strong>Humidity:</strong> ${humidity}%
+                   </li>
+                   <li class="list-group-item">
+                       <strong>Wind-Speed:</strong> ${windSpeedKmh}km/h
+                   </li>
+               </ul>
+           </div>
+       `;
 
-        const humidity = singleForecast.main.humidity;
-        const windSpeed = singleForecast.wind.speed; // In m/s by default
-
-        // Dependants / formatted data
-        const windSpeedKmh = (windSpeed * 3.6).toFixed(2); // Converts windspeed from m/s to km/h and round to 2 decimal places
-        const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}.png`;
-        const formattedTimestamp = dayjs.unix(dataTimestamp).format('ll');
-
-        // Create card content with formatted data and include bootstrap element classes for required formatting
-        singleForecastCard.innerHTML = `
-            <h4 class="card-header">${formattedTimestamp} <img src="${weatherIconUrl}" alt="${weatherDescription}"></h4>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <strong>Temperature:</strong>
-                    ${temperature}°C
-                </li>
-                <li class="list-group-item"><strong>Humidity:</strong> ${humidity}%</li>
-                <li class="list-group-item"><strong>Wind-Speed:</strong> ${windSpeedKmh}km/h</li>
-            </ul>
-        `;
-
-        // Append the forecast card to the corresponding forecast container
-        forecastWeatherContainers[i].appendChild(singleForecastCard);
-        }
-
+       // Set the HTML string as the innerHTML of the corresponding forecast container
+       forecastWeatherContainers[i].innerHTML = forecastCardHTML;
+   }
 }
 
 
@@ -203,11 +207,11 @@ searchButton.addEventListener("click", function (event) {
 
     // Get the user's input from the search field
     let city = searchInput.value;
-
     // Make a fetch request to the Weather API using the submitted city
     fetchCurrentWeather(city);
     fetchForecastWeather(city);
     saveSearch(city);
+    searchInput.value = '';
 });
 
 
