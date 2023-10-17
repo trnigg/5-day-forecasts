@@ -200,7 +200,13 @@ function displayForecastWeather(forecastData) {
     const searchData = `${cityName}, ${countryCode}`;
     // Get search history from localStorage, or initialise empty array
     const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    // Push the new search to the list
+    // check to see if current search already exists: See https://stackoverflow.com/questions/64590887/check-if-user-is-already-existed-in-localstorage
+    const existingSearch = searchHistory.find(search => search === searchData);
+    // if already exists, do nothing
+    if (existingSearch) {
+      return
+    } else {
+      // Push the new search to the list
     searchHistory.push(searchData);
     // Save the updated city list local storage
     localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
@@ -219,6 +225,7 @@ function displayForecastWeather(forecastData) {
     })
     // Show the "Clear Searches" button
     clearHistoryButton.style.display = 'block'; // TODO Confirm this works, hide button in HTML/CSS
+    } 
 }
 
 
