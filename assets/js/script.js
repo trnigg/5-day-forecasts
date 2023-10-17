@@ -33,6 +33,7 @@ function fetchCurrentWeather(city) {
     })
     .then(function (weatherData){
         displayCurrentWeather(weatherData);
+        saveSearch(weatherData); // Save search was moved here to share call-data for city-name & countr-code
     })
     .catch(function (error) {
       alert('Could not get current weather data: ' + error.message); // if there is a run-time error, the message will be displayed here. If however, there is a fetch error, it will be displayed as thrown above.
@@ -159,7 +160,7 @@ function displayForecastWeather(forecastData) {
        const windSpeed = singleForecast.wind.speed; // In m/s by default
 
        // Dependants / formatted data
-       const windSpeedKmh = (windSpeed * 3.6).toFixed(2);
+       const windSpeedKmh = (windSpeed * 3.6).toFixed(2); // Converts windspeed from m/s to km/h and round to 2 decimal places
        const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}.png`;
        const formattedTimestamp = dayjs.unix(dataTimestamp).format('ll');
 
@@ -192,12 +193,39 @@ function displayForecastWeather(forecastData) {
 
 
   // Function to save search to local storage and update search history
-  function saveSearch(city) {
-    // Save the city to local storage
-    // Generate and append a button element for the search history
+  function saveSearch(weatherData) {
+  // Get City Name and Country Code from API and use to save search data
+    const cityName = weatherData.name;
+    const countryCode = weatherData.sys.country;
+    const searchData = `${cityName}, ${countryCode}`;
+    // Get search history from localStorage, or initialise empty array
+    const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    // check to see if current search already exists: See https://stackoverflow.com/questions/64590887/check-if-user-is-already-existed-in-localstorage
+    const existingSearch = searchHistory.find(search => search === searchData);
+    // if already exists, do nothing
+    if (existingSearch) {
+      return
+    } else {
+      // Push the new search to the list
+    searchHistory.push(searchData);
+    // Save the updated city list local storage
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    // Generate a button element for the search history
+    const citySearchButton = document.createElement('button');
+    // Add class-names required for Bootstrap
+    citySearchButton.className = "btn btn-outline-secondary";
+    //Set button text to city that was searched
+    citySearchButton.innerText = searchData;
+    // Append the button element
+    searchHistoryContainer.appendChild(citySearchButton);
     // Add an event listener to the button to perform a new search when clicked
-    // Update the search history container
+    citySearchButton.addEventListener('click', function() {
+      fetchCurrentWeather(searchData);
+      fetchForecastWeather(searchData);
+    })
     // Show the "Clear Searches" button
+    clearHistoryButton.style.display = 'block'; // TODO Confirm this works, hide button in HTML/CSS
+    } 
 }
 
 
@@ -210,8 +238,7 @@ searchButton.addEventListener("click", function (event) {
     // Make a fetch request to the Weather API using the submitted city
     fetchCurrentWeather(city);
     fetchForecastWeather(city);
-    saveSearch(city);
-    searchInput.value = '';
+    // Get City Name and Country Code from API and use to save search data
 });
 
 
@@ -222,12 +249,27 @@ clearHistoryButton.addEventListener("click", function () {
   // Hide the "Clear History" button
 });
 
-// Function to initialize the app
+
 function init() {
-  // Check if there are previous searches in local storage
-  // If there are, generate and display buttons for each search
-  // Show or hide the "Clear History" button based on search history
+  // Check if there are previous searches in local storage, or initialize an empty array
+  let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+
+  if (searchHistory.length > 0) {
+      for (let i = 0; i < searchHistory.length; i++) {
+          const searchData = searchHistory[i];
+          const citySearchButton = document.createElement('button');
+          citySearchButton.className = "btn btn-outline-secondary";
+          citySearchButton.innerText = searchData;
+          searchHistoryContainer.appendChild(citySearchButton);
+          citySearchButton.addEventListener('click', function() {
+              fetchCurrentWeather(searchData);
+              fetchForecastWeather(searchData);
+          });
+      }
+      clearHistoryButton.style.display = "block";
+  }
 }
 
 // Call the init function to initialize the app
 init();
+
