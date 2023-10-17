@@ -159,7 +159,7 @@ function displayForecastWeather(forecastData) {
        const windSpeed = singleForecast.wind.speed; // In m/s by default
 
        // Dependants / formatted data
-       const windSpeedKmh = (windSpeed * 3.6).toFixed(2);
+       const windSpeedKmh = (windSpeed * 3.6).toFixed(2); // Converts windspeed from m/s to km/h and round to 2 decimal places
        const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}.png`;
        const formattedTimestamp = dayjs.unix(dataTimestamp).format('ll');
 
@@ -193,11 +193,27 @@ function displayForecastWeather(forecastData) {
 
   // Function to save search to local storage and update search history
   function saveSearch(city) {
-    // Save the city to local storage
-    // Generate and append a button element for the search history
+    // Get search history from localStorage, or initialise empty array
+    const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    // Push the new search to the list
+    searchHistory.push(city);
+    // Save the updated city list local storage
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    // Generate a button element for the search history
+    const citySearchButton = document.createElement('button');
+    // Add class-names required for Bootstrap
+    citySearchButton.className = "btn btn-outline-secondary";
+    //Set button text to city that was searched
+    citySearchButton.innerText = city;
+    // Append the button element
+    searchHistoryContainer.appendChild(citySearchButton);
     // Add an event listener to the button to perform a new search when clicked
-    // Update the search history container
+    citySearchButton.addEventListener('click', function() {
+      fetchCurrentWeather(city);
+      fetchForecastWeather(city);
+    })
     // Show the "Clear Searches" button
+    clearHistoryButton.style.display = 'block'; // TODO Confirm this works, hide button in HTML/CSS
 }
 
 
@@ -211,7 +227,8 @@ searchButton.addEventListener("click", function (event) {
     fetchCurrentWeather(city);
     fetchForecastWeather(city);
     saveSearch(city);
-    searchInput.value = '';
+    // Clear 'City Name' Search Input field
+    // searchInput.value = ''; 
 });
 
 
@@ -222,12 +239,27 @@ clearHistoryButton.addEventListener("click", function () {
   // Hide the "Clear History" button
 });
 
-// Function to initialize the app
+
 function init() {
-  // Check if there are previous searches in local storage
-  // If there are, generate and display buttons for each search
-  // Show or hide the "Clear History" button based on search history
+  // Check if there are previous searches in local storage, or initialize an empty array
+  let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+
+  if (searchHistory.length > 0) {
+      for (let i = 0; i < searchHistory.length; i++) {
+          const city = searchHistory[i];
+          const citySearchButton = document.createElement('button');
+          citySearchButton.className = "btn btn-outline-secondary";
+          citySearchButton.innerText = city;
+          searchHistoryContainer.appendChild(citySearchButton);
+          citySearchButton.addEventListener('click', function() {
+              fetchCurrentWeather(city);
+              fetchForecastWeather(city);
+          });
+      }
+      clearHistoryButton.style.display = "block";
+  }
 }
 
 // Call the init function to initialize the app
 init();
+
