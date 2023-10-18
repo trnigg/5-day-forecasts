@@ -8,6 +8,7 @@ let searchInput = document.querySelector('#search-input');
 let searchButton = document.querySelector('#search-button');
 let weatherContainer = document.querySelector('#weather-container');
 let searchHistoryContainer = document.querySelector('#search-history');
+var previousSearchHeading = document.querySelector('#previous-search-heading');
 let clearHistoryButton = document.querySelector('#clear-history-button');
 let currentWeatherContainer = document.querySelector('#current-weather-container');
 let forecastWeatherContainers = document.getElementsByClassName('forecast-weather-container');
@@ -190,9 +191,7 @@ function displayForecastWeather(forecastData) {
    }
 }
 
-
-
-  // Function to save search to local storage and update search history
+  // FUNCTION to save search to local storage and update search history
   function saveSearch(weatherData) {
   // Get City Name and Country Code from API and use to save search data
     const cityName = weatherData.name;
@@ -208,7 +207,7 @@ function displayForecastWeather(forecastData) {
     } else {
       // Push the new search to the list
     searchHistory.push(searchData);
-    // Save the updated city list local storage
+    // Save the updated city list to local Storage
     localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
     // Generate a button element for the search history
     const citySearchButton = document.createElement('button');
@@ -223,13 +222,12 @@ function displayForecastWeather(forecastData) {
       fetchCurrentWeather(searchData);
       fetchForecastWeather(searchData);
     })
-    // Show the "Clear Searches" button
-    clearHistoryButton.style.display = 'block'; // TODO Confirm this works, hide button in HTML/CSS
+    displayHistorySection();
     } 
 }
 
 
-// Event listener for form submission
+// EVENT listener for form submission
 searchButton.addEventListener("click", function (event) {
     event.preventDefault();
 
@@ -238,17 +236,28 @@ searchButton.addEventListener("click", function (event) {
     // Make a fetch request to the Weather API using the submitted city
     fetchCurrentWeather(city);
     fetchForecastWeather(city);
-    // Get City Name and Country Code from API and use to save search data
+    // Clear Input Field
+    searchInput.value = '';
 });
 
 
 // Event listener for clearing search history
 clearHistoryButton.addEventListener("click", function () {
-  // Clear the search history from local storage
-  // Clear the search history container
+  // Clear  search history from localStorage
+  localStorage.removeItem('searchHistory');
+  // Clear the UI container
+  searchHistoryContainer.innerHTML = '';
   // Hide the "Clear History" button
+  clearHistoryButton.style.display = 'none';
 });
 
+// FUNCTION to display the 'Previous Search' heading and 'Clear History' button
+function displayHistorySection() {
+    // Show Search History Heading:
+    previousSearchHeading.style.display = 'block';
+    // Show the "Clear Searches" button
+    clearHistoryButton.style.display = 'block';
+}
 
 function init() {
   // Check if there are previous searches in local storage, or initialize an empty array
@@ -266,8 +275,8 @@ function init() {
               fetchForecastWeather(searchData);
           });
       }
-      clearHistoryButton.style.display = "block";
-  }
+      displayHistorySection();
+  } 
 }
 
 // Call the init function to initialize the app
