@@ -114,7 +114,6 @@ function displayForecastWeather(forecastData) {
         const singleForecast = forecastData.list[i];
         const singleForecastCard = document.createElement("div");
         singleForecastCard.className = "card";
-        console.log(singleForecast);
 
        // Extract (raw) relevant data
        const dataTimestamp = singleForecast.dt;
