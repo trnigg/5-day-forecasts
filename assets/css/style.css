@@ -1,4 +1,36 @@
+/* Root Styles */
+:root {
+    --main-colour: #f9f9f9; /* Cool Off-White */
+    --secondary-colour: #292C33; /* Dark Anthracite */
+    --tertiary-colour: #D3EDFD; /* light sky-blue */
+    --accent-colour: #c4a747; /* Metallic Gold Desaturated*/
+}
+
+body {
+    font-size: 1.1rem; /*After reset = 18px - slightly larger to accomodate lighter font */
+    font-family: "Nunito","Bahnschrift", "Geneva", sans-serif;
+    background-color: var(--main-colour);
+}
+
 #clear-history-button, #previous-search-heading {
     display: none;
 }
 
+header {
+    background-color: var(--tertiary-colour);
+}
+
+h1 {
+    color: var(--secondary-colour);
+    font-size: 3.2rem; /*After reset = 18px - slightly larger to accomodate lighter font */
+}
+
+h2 {
+    color: var(--secondary-colour);
+    font-size: 2.4rem; /*After reset = 18px - slightly larger to accomodate lighter font */
+}
+
+.card-header {
+    background-color: var(--tertiary-colour);
+    color: var(--secondary-colour);
+}
