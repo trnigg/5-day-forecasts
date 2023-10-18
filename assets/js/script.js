@@ -126,32 +126,20 @@ function displayCurrentWeather(weatherData) {
 // Function to display forecast data
 function displayForecastWeather(forecastData) {
 
-    console.log(forecastData);
-    // Filter out only the fetched data to only include 1 object per day (at noon)
-    // used: https://chat.openai.com/share/879bd8cf-c22c-4e1c-9142-0ecbf45872e6 as a starting point to achive this
-    // Defines the filtering criteria where the .dt_txt key contains a property of "12:00:00"
-    function filterForecastResults(item){
-        return item.dt_txt.endsWith("12:00:00");
-    }
-
-    // Uses the filter method to go through 'list' array and create a new array containing only the elements meeting the criteria defined in the related function above
-    const noonForecasts = forecastData.list.filter(filterForecastResults);
-
-    console.log(noonForecasts);
-    // Create and display weather cards for the five-day forecast
-
     // Iterate through and clear each forecast container
     for (let i = 0; i < forecastWeatherContainers.length; i++) {
         const eachContainer = forecastWeatherContainers[i];
         eachContainer.innerHTML = "";
         }
 
-    // Iterate through the filtered forecast data and create a card for each
-    for (let i = 0; i < noonForecasts.length && i < forecastWeatherContainers.length; i++) { //i must be less than number of forecast items and containers (should = 5)
-        const singleForecast = noonForecasts[i];
+    console.log(forecastData);
+
+    // Iterate through the forecast data and create a card for each
+    for (let i = 7; i < forecastData.list.length ; i+= 8) { //i must be less than number of forecast items and containers (should = 5)
+        const singleForecast = forecastData.list[i];
         const singleForecastCard = document.createElement("div");
         singleForecastCard.className = "card";
-
+        console.log(singleForecast);
        // Extract (raw) relevant data
        const dataTimestamp = singleForecast.dt;
        const temperature = singleForecast.main.temp;
@@ -187,7 +175,7 @@ function displayForecastWeather(forecastData) {
        `;
 
        // Set the HTML string as the innerHTML of the corresponding forecast container
-       forecastWeatherContainers[i].innerHTML = forecastCardHTML;
+       forecastWeatherContainers[((i + 1) / 8) - 1].innerHTML = forecastCardHTML;
    }
 }
 
