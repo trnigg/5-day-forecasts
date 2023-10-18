@@ -1,4 +1,4 @@
-// FUNCTION to execute code only run after the DOM is fully loaded
+// TODO Make sure the Previous Searches appears when submitting first item
 
 // Add Day.js plugin for Ordinal Date Format - https://day.js.org/docs/en/plugin/loading-into-browser
 dayjs.extend(window.dayjs_plugin_localizedFormat);
@@ -98,9 +98,9 @@ function displayCurrentWeather(weatherData) {
     // Create HTML code for the current weather card
     const currentWeatherCardHTML = `
         <div class="card">
-            <h3 class="card-header">
+            <h3 class="card-header text-center">
                 <strong>${cityName}, ${countryCode}</strong> (${formattedTimestamp})
-                <img src="${weatherIconUrl}" alt="${weatherDescription}">
+                <div><img src="${weatherIconUrl}" alt="${weatherDescription}"></div>
             </h3>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
@@ -134,8 +134,8 @@ function displayForecastWeather(forecastData) {
 
     console.log(forecastData);
 
-    // Iterate through the forecast data and create a card for each
-    for (let i = 7; i < forecastData.list.length ; i+= 8) { //i must be less than number of forecast items and containers (should = 5)
+    // Iterate through the forecast data and create a card for every 8 item in array (corresponding to 24 intervals)
+    for (let i = 7; i < forecastData.list.length ; i+= 8) { //i must be less than number of forecast items (i = 7 + (4*8) = 39 < 40 items in array)
         const singleForecast = forecastData.list[i];
         const singleForecastCard = document.createElement("div");
         singleForecastCard.className = "card";
@@ -156,9 +156,9 @@ function displayForecastWeather(forecastData) {
        // Create an HTML string for the forecast card
        const forecastCardHTML = `
            <div class="card">
-               <h4 class="card-header">
+               <h4 class="card-header text-center">
                    ${formattedTimestamp}
-                   <img src="${weatherIconUrl}" alt="${weatherDescription}">
+                   <div><img src="${weatherIconUrl}" alt="${weatherDescription}"><div>
                </h4>
                <ul class="list-group list-group-flush">
                    <li class="list-group-item">
@@ -175,6 +175,7 @@ function displayForecastWeather(forecastData) {
        `;
 
        // Set the HTML string as the innerHTML of the corresponding forecast container
+       // Requires manipulation of i to create multiple of 8, divide by 8 and subtract by 1. This creates and index of 0-4 (with 5 cards)
        forecastWeatherContainers[((i + 1) / 8) - 1].innerHTML = forecastCardHTML;
    }
 }
@@ -233,8 +234,16 @@ searchButton.addEventListener("click", function (event) {
 clearHistoryButton.addEventListener("click", function () {
   // Clear  search history from localStorage
   localStorage.removeItem('searchHistory');
-  // Clear the UI container
-  searchHistoryContainer.innerHTML = '';
+  // Remove each button
+  const buttons = searchHistoryContainer.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.remove();
+    });
+
+//   searchHistoryContainer.innerHTML = '';
+  // Replace heading
+  //Hide heading 
+  previousSearchHeading.style.display = 'none'
   // Hide the "Clear History" button
   clearHistoryButton.style.display = 'none';
 });
