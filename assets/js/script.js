@@ -1,35 +1,28 @@
-// TODO Make sure the Previous Searches appears when submitting first item
-
 // Add Day.js plugin for Ordinal Date Format - https://day.js.org/docs/en/plugin/loading-into-browser
 dayjs.extend(window.dayjs_plugin_localizedFormat);
 
 // Define global variables
-let searchInput = document.querySelector('#search-input');
-let searchButton = document.querySelector('#search-button');
-let weatherContainer = document.querySelector('#weather-container');
-let searchHistoryContainer = document.querySelector('#search-history');
+var searchInput = document.querySelector('#search-input');
+var searchButton = document.querySelector('#search-button');
+var weatherContainer = document.querySelector('#weather-container');
+var searchHistoryContainer = document.querySelector('#search-history');
 var previousSearchHeading = document.querySelector('#previous-search-heading');
-let clearHistoryButton = document.querySelector('#clear-history-button');
-let currentWeatherContainer = document.querySelector('#current-weather-container');
-let forecastWeatherContainers = document.getElementsByClassName('forecast-weather-container');
+var clearHistoryButton = document.querySelector('#clear-history-button');
+var currentWeatherContainer = document.querySelector('#current-weather-container');
+var forecastWeatherContainers = document.getElementsByClassName('forecast-weather-container');
 
-// Going to use the deprecated built-in geocoding
 const API_KEY = '302392b3827a5512bab59a356ac0fa88';
-// let requestUrl = 'api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}'; forecast
 
-
-
-
-// Function to fetch weather data from the API
+// FUNCTION to fetch weather data from the API
 function fetchCurrentWeather(city) {
-    // Make a fetch request to the Weather API using the city
+    // Make a fetch request to the Weather API using the city use the deprecated built-in geocoding
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`; // Use template-literals to insert 'city' parameter and 'API_KEY' constant and get temperature in celsius (metric).
     fetch(apiUrl) //initiates HTTP GET request
     .then(function (response) {
       if (response.ok) {
         return response.json();
       } else {
-        throw new Error(`Fetch Error (${response.statusText})`); //  https://www.youtube.com/watch?v=cFTFtuEQ-10 see more comments next to fetch
+        throw new Error(`Fetch Error (${response.statusText}). Please check you have entered a valid city and try again.`); //  https://www.youtube.com/watch?v=cFTFtuEQ-10 see more comments next to fetch
       }
     })
     .then(function (weatherData){
@@ -39,15 +32,9 @@ function fetchCurrentWeather(city) {
     .catch(function (error) {
       alert('Could not get current weather data: ' + error.message); // if there is a run-time error, the message will be displayed here. If however, there is a fetch error, it will be displayed as thrown above.
     });
-        // Parse the response data
-    // Display the weather data
-    // Generate and display weather cards for the five-day forecast
-    console.log(apiUrl);
 }
-
-// fetchCurrentWeather();
   
-// Function to fetch forecast data from the API
+// FUNCTION to fetch forecast data from the API
 function fetchForecastWeather(city) {
     // Make a fetch request to the Weather API using the city
     // NOTE: The better solution (which would simplify a lot of code) is hidden behind a paywall; https://api.openweathermap.org/data/2.5/forecast/***daily***?q=${city}&appid=${API_KEY}&units=metric
@@ -57,7 +44,7 @@ function fetchForecastWeather(city) {
       if (response.ok) {
         return response.json();
       } else {
-        throw new Error(`Fetch Error (${response.statusText})`);
+        throw new Error(`Fetch Error (${response.statusText}). Please check you have entered a valid city and try again.`);
       }
     })
     .then(function (forecastData){
@@ -66,13 +53,9 @@ function fetchForecastWeather(city) {
     .catch(function (error) {
       alert('Could not get forecast weather data: ' + error.message); // if there is a run-time error, the message will be displayed here. If however, there is a fetch error, it will be displayed as thrown above.
     });
-        // Parse the response data
-    // Display the weather data
-    // Generate and display weather cards for the five-day forecast
-    console.log(apiUrl);
 }
 
-// Function to display weather data
+// FUNCTION to display weather data
 function displayCurrentWeather(weatherData) {
     // Clear the #current-weather-container
     currentWeatherContainer.innerHTML = "";
@@ -91,9 +74,6 @@ function displayCurrentWeather(weatherData) {
     const windSpeedKmh = (windSpeed * 3.6).toFixed(2); // Converts windspeed from m/s to km/h and round to 2 decimal places
     const weatherIconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}.png`;
     const formattedTimestamp = dayjs.unix(dataTimestamp).format('ll');
-
-
-    // Create and display the main weather card for today
 
     // Create HTML code for the current weather card
     const currentWeatherCardHTML = `
@@ -118,12 +98,9 @@ function displayCurrentWeather(weatherData) {
 
     // Set the HTML string as the innerHTML of the currentWeatherContainer
     currentWeatherContainer.innerHTML = currentWeatherCardHTML;
-
-    console.log(weatherData);
-
 }
   
-// Function to display forecast data
+// FUNCTION to display forecast data
 function displayForecastWeather(forecastData) {
 
     // Iterate through and clear each forecast container
@@ -132,14 +109,13 @@ function displayForecastWeather(forecastData) {
         eachContainer.innerHTML = "";
         }
 
-    console.log(forecastData);
-
     // Iterate through the forecast data and create a card for every 8 item in array (corresponding to 24 intervals)
     for (let i = 7; i < forecastData.list.length ; i+= 8) { //i must be less than number of forecast items (i = 7 + (4*8) = 39 < 40 items in array)
         const singleForecast = forecastData.list[i];
         const singleForecastCard = document.createElement("div");
         singleForecastCard.className = "card";
         console.log(singleForecast);
+
        // Extract (raw) relevant data
        const dataTimestamp = singleForecast.dt;
        const temperature = singleForecast.main.temp;
@@ -215,11 +191,17 @@ function displayForecastWeather(forecastData) {
     } 
 }
 
+// FUNCTION to display the 'Previous Search' heading and 'Clear History' button
+function displayHistorySection() {
+    // Show Search History Heading:
+    previousSearchHeading.style.display = 'block';
+    // Show the "Clear Searches" button
+    clearHistoryButton.style.display = 'block';
+}
 
-// EVENT listener for form submission
+// EVENT listener for search submission via 'click'
 searchButton.addEventListener("click", function (event) {
     event.preventDefault();
-
     // Get the user's input from the search field
     let city = searchInput.value;
     // Make a fetch request to the Weather API using the submitted city
@@ -229,53 +211,55 @@ searchButton.addEventListener("click", function (event) {
     searchInput.value = '';
 });
 
-
-// Event listener for clearing search history
-clearHistoryButton.addEventListener("click", function () {
-  // Clear  search history from localStorage
-  localStorage.removeItem('searchHistory');
-  // Remove each button
-  const buttons = searchHistoryContainer.querySelectorAll('button');
-    buttons.forEach(button => {
-        button.remove();
-    });
-
-//   searchHistoryContainer.innerHTML = '';
-  // Replace heading
-  //Hide heading 
-  previousSearchHeading.style.display = 'none'
-  // Hide the "Clear History" button
-  clearHistoryButton.style.display = 'none';
+// EVENT listener for search submission via 'enter' key
+searchInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        // Get the user's input from the search field
+        let city = searchInput.value;
+        // Make a fetch request to the Weather API using the submitted city
+        fetchCurrentWeather(city);
+        fetchForecastWeather(city);
+        // Clear Input Field
+        searchInput.value = '';
+    }
 });
 
-// FUNCTION to display the 'Previous Search' heading and 'Clear History' button
-function displayHistorySection() {
-    // Show Search History Heading:
-    previousSearchHeading.style.display = 'block';
-    // Show the "Clear Searches" button
-    clearHistoryButton.style.display = 'block';
-}
+// EVENT listener for clearing search history
+clearHistoryButton.addEventListener("click", function () {
+    // Clear  search history from localStorage
+    localStorage.removeItem('searchHistory');
+    // Remove each button (using innerHTML = '' would wipe heading)
+    const buttons = searchHistoryContainer.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.remove();
+        });
+    //Hide heading 
+    previousSearchHeading.style.display = 'none'
+    // Hide the "Clear History" button
+    clearHistoryButton.style.display = 'none';
+});
 
 function init() {
-  // Check if there are previous searches in local storage, or initialize an empty array
-  let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
-
-  if (searchHistory.length > 0) {
-      for (let i = 0; i < searchHistory.length; i++) {
-          const searchData = searchHistory[i];
-          const citySearchButton = document.createElement('button');
-          citySearchButton.className = "btn btn-outline-secondary";
-          citySearchButton.innerText = searchData;
-          searchHistoryContainer.appendChild(citySearchButton);
-          citySearchButton.addEventListener('click', function() {
-              fetchCurrentWeather(searchData);
-              fetchForecastWeather(searchData);
-          });
-      }
-      displayHistorySection();
-  } 
+    // Check if there are previous searches in local storage, or initialize an empty array
+    let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    // ITERATE through each existing search and create a button.
+    if (searchHistory.length > 0) {
+        for (let i = 0; i < searchHistory.length; i++) {
+            const searchData = searchHistory[i];
+            const citySearchButton = document.createElement('button');
+            citySearchButton.className = "btn btn-outline-secondary";
+            citySearchButton.innerText = searchData;
+            searchHistoryContainer.appendChild(citySearchButton);
+            citySearchButton.addEventListener('click', function() {
+                fetchCurrentWeather(searchData);
+                fetchForecastWeather(searchData);
+            });
+        }
+        displayHistorySection();
+    } 
 }
 
-// Call the init function to initialize the app
+// CALL the init function to initialize the app
 init();
 
